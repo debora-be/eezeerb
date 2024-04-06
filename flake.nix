@@ -13,7 +13,7 @@
         pkgs = import nixpkgs { inherit system; };
 
         inputs = with pkgs;
-          [kubectl k3d glibcLocales docker]
+          [kubectl k3d glibcLocales docker helm opentofu]
           ++ optional stdenv.isLinux [ inotify-tools ]
           ++ optional stdenv.isDarwin terminal-notifier
           ++ optionals stdenv.isDarwin
