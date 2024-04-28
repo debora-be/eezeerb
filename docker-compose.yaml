@@ -9,7 +9,7 @@ services:
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=passin
+      - POSTGRES_DB=postgres
     networks:
       - passin
 
@@ -18,10 +18,16 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: passin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3333/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     ports:
       - 3001:3333
     environment:
-      - DATABASE_URL=postgres://admin:admin@postgres:5432/passin  
+      - DATABASE_URL=postgres://admin:admin@postgres:5432/postgres
       - API_BASE_URL=http://localhost:3333
     depends_on:
       - postgres

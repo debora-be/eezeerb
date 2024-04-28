@@ -22,6 +22,11 @@ RUN pnpm prune --prod
 
 FROM node:20-alpine3.19 AS deploy
 
+RUN apk add --no-cache openssl
+RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz \
+    && rm dockerize-linux-amd64-v0.6.1.tar.gz
+
 WORKDIR /usr/src/app
 
 RUN npm install -g pnpm prisma
@@ -35,4 +40,4 @@ RUN pnpm prisma generate
 
 EXPOSE 3333
 
-CMD ["pnpm", "start"]
+CMD dockerize -wait tcp://postgres:5432 -timeout 60s && pnpm start
